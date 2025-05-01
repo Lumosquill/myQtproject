@@ -1,0 +1,42 @@
+<RCC>
+    <qresource prefix="/1">
+        <file>background.jpg</file>
+        <file>harry.png</file>
+        <file>startscene.jpg</file>
+        <file>Expecto-Patronum.png</file>
+        <file>Quit.png</file>
+        <file>Info.png</file>
+        <file>Start.png</file>
+        <file>Expecto-Patronum(1).png</file>
+        <file>Expecto-Patronum(2).png</file>
+        <file>dementor.png</file>
+        <file>spider.png</file>
+        <file>dementor bullet.png</file>
+        <file>felix felicis.png</file>
+        <file>time turner.png</file>
+        <file>spider bullet.png</file>
+        <file>player bullet.png</file>
+        <file>harry-mir.png</file>
+        <file>dementor-mir.png</file>
+        <file>bigdementor-mir.png</file>
+        <file>bigdementor.png</file>
+        <file>chocolatefrog.png</file>
+        <file>gameoverscene.jpg</file>
+        <file>GAME-OVER.png</file>
+        <file>sentence1.png</file>
+        <file>Try-Again.png</file>
+        <file>thoughtbubble1.png</file>
+        <file>thoughtbubble2.png</file>
+        <file>thoughtbubble3.png</file>
+        <file>thoughtbubble4.png</file>
+        <file>thoughtbubble5.png</file>
+        <file>thoughtbubble6.png</file>
+        <file>thoughtbubble7.png</file>
+        <file>thoughtbubble8.png</file>
+        <file>thoughtbubble9.png</file>
+        <file>thoughtbubble10.png</file>
+        <file>HPlabel.png</file>
+        <file>Manalabel.png</file>
+        <file>gamewinscene.jpg</file>
+    </qresource>
+</RCC>
