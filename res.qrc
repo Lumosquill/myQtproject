@@ -38,5 +38,15 @@
         <file>HPlabel.png</file>
         <file>Manalabel.png</file>
         <file>gamewinscene.jpg</file>
+        <file>ttk.ogg</file>
+        <file>ultimate_ttk.ogg</file>
+        <file>gamewin.mp3</file>
+        <file>gameover.mp3</file>
+        <file>Hedwig's Theme.ogg</file>
+        <file>button.mp3</file>
+        <file>victory.png</file>
+        <file>triumph_sentence.png</file>
+        <file>info_page.jpg</file>
+        <file>info_page.png</file>
     </qresource>
 </RCC>

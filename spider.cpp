@@ -5,13 +5,13 @@ Spider::Spider(Player *_player, int _HP, int _AttackPoint, qreal _Speed)
 {
     this->setPixmap(QPixmap(":/1/spider.png"));
     this->setScale(1);
-    qDebug() << "Spider created ";
+    //qDebug() << "Spider created ";
     setTransformOriginPoint(boundingRect().center());
 
     mNo = 2;
 }
 Spider::~Spider() {
-    qDebug() << "Spider destroyed ";
+    //qDebug() << "Spider destroyed ";
 }
 void Spider::startSkill()
 {

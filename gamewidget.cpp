@@ -29,7 +29,7 @@ Gamewidget::Gamewidget(QWidget *parent)
 Gamewidget::~Gamewidget()
 {
     delete ui;
-    qDebug()<<"widget released";
+    //qDebug()<<"widget released";
 }
 void Gamewidget::initstart()
 {
@@ -40,9 +40,25 @@ void Gamewidget::initstart()
     mGameView.setScene(&mStartScene); //先显示开始场景
     mGameView.show();
 
+    MenuBGMplayer = new QMediaPlayer(this);
+    MenuBGMOutput = new QAudioOutput(this);
+    MenuBGMplayer->setAudioOutput(MenuBGMOutput);
+    MenuBGMplayer->setSource(QUrl("qrc:/1/Hedwig's Theme.ogg"));
+    QTimer::singleShot(500, this, [this]() {
+        MenuBGMplayer->play(); //延迟0.5秒播放音乐
+    });
+    MenuBGMOutput->setVolume(0.5);
+
     titlelabel = new QLabel(this);
     titlelabel->setPixmap(QPixmap(":/1/Expecto-Patronum(1).png"));
     titlelabel->setGeometry(200, 28, 500, 200);  // 设置标签的位置和大小
+
+    //按钮音效
+    ButtonAudioplayer = new QMediaPlayer(this);
+    ButtonAudioOutput = new QAudioOutput(this);
+    ButtonAudioplayer->setAudioOutput(ButtonAudioOutput);
+    ButtonAudioplayer->setSource(QUrl("qrc:/1/button.mp3"));
+
 
     //开始按钮
     startbtn = new QToolButton(this);
@@ -55,6 +71,7 @@ void Gamewidget::initstart()
     connect(startbtn,&QToolButton::clicked,[this](){
     if (!gameStarted)
     {
+    ButtonAudioplayer->play();
     initgame();
     startbtn->hide();
     infobtn->hide();
@@ -73,13 +90,60 @@ void Gamewidget::initstart()
     infobtn->setIcon(QIcon(":/1/Info.png"));
     infobtn->setIconSize(QSize(133,40));
     infobtn->move(90,280);
+    connect(infobtn,&QToolButton::clicked,[this](){
+        ButtonAudioplayer->play();
+
+        QDialog* dialog = new QDialog(this);
+        dialog->setWindowTitle("Info");
+        dialog->resize(430, 400);
+        dialog->setStyleSheet("QDialog { background-color: white; border-radius: 12px; }");
+        QScrollArea* scrollArea = new QScrollArea(dialog);
+        scrollArea->setWidgetResizable(true);
+        scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+        scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        scrollArea->verticalScrollBar()->setStyleSheet(R"(
+        QScrollBar:vertical {
+            background: transparent;
+            width: 10px;
+            margin: 0px 0px 0px 0px;
+        }
+
+        QScrollBar::handle:vertical {
+            background: #5CACEE;
+            min-height: 20px;
+            border-radius: 5px;
+        }
+
+        QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+            height: 0px;
+        }
+
+        QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+            background: none;
+        }
+    )");
+        QLabel* imageLabel = new QLabel;
+        QPixmap introImage(":/1/info_page.jpg");
+        QPixmap scaled = introImage.scaledToWidth(400, Qt::SmoothTransformation);
+        imageLabel->setPixmap(scaled);
+
+        scrollArea->setWidget(imageLabel);
+
+        QVBoxLayout* layout = new QVBoxLayout(dialog);
+        layout->addWidget(scrollArea);
+        layout->setContentsMargins(10, 10, 10, 10);
+        dialog->setLayout(layout);
+
+        dialog->exec(); // 显示为模态对话框
+    });
+
 
     //退出按钮
     quitbtn = new QToolButton(this);
     quitbtn->setAutoRaise(true);
     quitbtn->setFixedSize(133,40);
     quitbtn->setIcon(QIcon(":/1/Quit.png"));
-    quitbtn->setIconSize(QSize(133,40));
+    quitbtn->setIconSize(QSize(250,327));
     quitbtn->move(90,340);
     connect(quitbtn,&QToolButton::clicked,[this](){
         close();
@@ -104,6 +168,16 @@ void Gamewidget::initgame()
     setTimer();
     startTimer();
 
+    MenuBGMplayer->pause();
+    BGMplayer = new QMediaPlayer(this);
+    BGMOutput = new QAudioOutput(this);
+    BGMplayer->setAudioOutput(BGMOutput);
+    BGMplayer->setSource(QUrl("qrc:/1/ttk.ogg"));
+    QTimer::singleShot(500, this, [this]() {
+        BGMplayer->play(); //延迟0.5秒播放音乐
+    });
+    BGMOutput->setVolume(0.5);
+
     //设置属性栏
     visualize();
 
@@ -120,6 +194,8 @@ void Gamewidget::initgame()
 }
 void Gamewidget::restartgame()
 {
+    LoseBGMplayer->pause();
+    BGMplayer->play();
     mGameView.setScene(&mGameScene);
     sentence1label->hide();
     GAMEOVERlabel->hide();
@@ -180,6 +256,7 @@ void Gamewidget::restartgame()
     startTimer();
 
 
+
 }
 void Gamewidget::playermove()
 {
@@ -237,8 +314,14 @@ void Gamewidget::keyPressEvent(QKeyEvent *event)
 void Gamewidget::GameOver()
 {
     stopTimer();
+    BGMplayer->pause();
     QTimer::singleShot(1000, this, [=]() {
-        qDebug() << "GameOver UI update starting...";
+        LoseBGMplayer = new QMediaPlayer(this);
+        LoseBGMOutput = new QAudioOutput(this);
+        LoseBGMplayer->setAudioOutput(BGMOutput);
+        LoseBGMplayer->setSource(QUrl("qrc:/1/gameover.mp3"));
+        LoseBGMplayer->play();
+        LoseBGMOutput->setVolume(0.5);
         mOverScene.setSceneRect(QRect(0,0,850,629));
         mOverScene.addPixmap(QPixmap(":/1/gameoverscene.jpg"));
         mGameView.setScene(&mOverScene);
@@ -264,36 +347,44 @@ void Gamewidget::GameOver()
         restartbtn->move(325,350);
         restartbtn->show();
         connect(restartbtn,&QToolButton::clicked,[this](){
+            ButtonAudioplayer->play();
             restartgame();
             restartbtn->hide();
         });
-        qDebug() << "GameOver UI update complete.";
      });
 }
 void Gamewidget::GameWin()
 {
     stopTimer();
-    HPBar->hide();
-    ManaBar->hide();
-    hplabel->hide();
-    manalabel->hide();
-    felixLabel->hide();
-    felixBtn->hide();
-    mWinScene.setSceneRect(QRect(0,0,850,629));
-    mWinScene.addPixmap(QPixmap(":/1/gamewinscene.jpg"));
-    mGameView.setScene(&mWinScene);
-    victorylabel = new QLabel(this);
-    victorylabel->setPixmap(QPixmap(":/1/GAME-OVER.png"));
-    victorylabel->setGeometry(175, 30, 500, 200);
-    victorylabel->show();
-    sentence2label = new QLabel(this);
-    sentence2label->setPixmap(QPixmap(":/1/sentence1.png"));
-    sentence2label->setGeometry(100, 220, 686, 33);
-    sentence2label->show();
-    sentence3label = new QLabel(this);
-    sentence3label->setPixmap(QPixmap(":/1/sentence1.png"));
-    sentence3label->setGeometry(100, 220, 686, 33);
-    sentence3label->show();
+
+    BGMplayer->pause();
+    WinBGMplayer = new QMediaPlayer(this);
+    WinBGMOutput = new QAudioOutput(this);
+    WinBGMplayer->setAudioOutput(WinBGMOutput);
+    WinBGMplayer->setSource(QUrl("qrc:/1/gamewin.mp3"));
+    QTimer::singleShot(500, this, [this]() {
+        WinBGMplayer->play(); //延迟0.5秒播放音乐
+        WinBGMOutput->setVolume(0.5);
+        HPBar->hide();
+        ManaBar->hide();
+        hplabel->hide();
+        manalabel->hide();
+        felixLabel->hide();
+        felixBtn->hide();
+        mWinScene.setSceneRect(QRect(0,0,850,629));
+        mWinScene.addPixmap(QPixmap(":/1/gamewinscene.jpg"));
+        mGameView.setScene(&mWinScene);
+        victorylabel = new QLabel(this);
+        victorylabel->setPixmap(QPixmap(":/1/victory.png"));
+        victorylabel->setGeometry(225, 50, 400, 107);
+        victorylabel->show();
+        sentence2label = new QLabel(this);
+        sentence2label->setPixmap(QPixmap(":/1/triumph_sentence.png"));
+        sentence2label->setGeometry(100, 200, 686, 32);
+        sentence2label->show();
+
+    });
+
 }
 void Gamewidget::resetproperties()
 {
@@ -389,7 +480,7 @@ void Gamewidget::useFelixFelicis()
 
         mAttainedFelixNum--;
         felixLabel->setText("x" + QString::number(mAttainedFelixNum));
-
+        mIsFelixActive = true;
         QGraphicsDropShadowEffect* glow = new QGraphicsDropShadowEffect;
         glow->setBlurRadius(20);
         glow->setColor(QColor(255, 223, 0));
@@ -397,12 +488,8 @@ void Gamewidget::useFelixFelicis()
         m_player.setGraphicsEffect(glow);
 
         QTimer::singleShot(6000, [&]() {
-            m_player.setGraphicsEffect(nullptr);
-        });
-
-
-        QTimer::singleShot(6000, [&]() {
             m_player.setGraphicsEffect(nullptr);//移除光晕
+            mIsFelixActive = false;
         });
         m_player.restoreMana(20);
         m_player.restoreHP(30);
@@ -410,7 +497,6 @@ void Gamewidget::useFelixFelicis()
         // 如果没有福灵剂，弹出提示
         QMessageBox::information(this, "没有福灵剂", "你没有足够的福灵剂！");
     }
-
 }
 void Gamewidget::keyReleaseEvent(QKeyEvent *event)
 {
@@ -632,7 +718,7 @@ void Gamewidget::onTimeout()
         {
             Gameprogress::Instance()->TimeturnerAppear();
         }
-        if(gameTime==40)
+        if(gameTime==38)
         {
             Gameprogress::Instance()->FelixfelicisAppear();
         }
@@ -745,7 +831,7 @@ void Gamewidget::player_chocolatefrogCollision()
             mGameScene.removeItem(mFrogList[j]);
             if (mFrogList[j] != nullptr) mFrogList[j]->deleteLater();
             mFrogList.removeOne(mFrogList[j]);
-            m_player.mhp+=8;
+            m_player.mhp+=4;
             HPBar->setValue(m_player.getHP());
         }
     }

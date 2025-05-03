@@ -20,7 +20,7 @@ public:
 
     ~Gameprogress()
     {
-        qDebug()<<"Gameprogress released";
+
     }
 
     void EnemyAppearProgress(int _time);

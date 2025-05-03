@@ -8,6 +8,8 @@ int main(int argc, char *argv[])
     Gamewidget w;
     w.show();
     return a.exec();
+    QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 }
 //组件	作用
 //QGraphicsScene	逻辑场景，管理所有图形元素 比如作为游戏地图

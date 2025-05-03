@@ -5,6 +5,7 @@
 #include<QTimer>
 #include<QString>
 #include<QRandomGenerator>
+
 class Enemybase: public Gameobject
 {
     Q_OBJECT

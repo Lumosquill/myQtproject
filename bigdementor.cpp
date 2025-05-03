@@ -31,12 +31,14 @@ void Bigdementor::bigdementorshoot()
 
         mShootCount++;
         //Enemybullet(Enemybase *_owner,BulletDir _dir,int _Attack, qreal _speed = 8,int _type = 0);
-        auto* dementorBL = new Enemybullet(this, Bulletbase::BulletDir(5), 0.1, 5, 2);
+        qreal bulletSpeed = Gamewidget::widget->mIsFelixActive ? 1 : 5;
+        auto* dementorBL = new Enemybullet(this, Bulletbase::BulletDir(5), 0.1, bulletSpeed, 2);
         Gamewidget::widget->getGameScene().addItem(dementorBL);
         Gamewidget::widget->mEnemyBulletList.append(dementorBL);
         dementorBL->setZValue(2);
     });
-    mShootTimer->start(100);
+    int shootinterval = Gamewidget::widget->mIsFelixActive ? 1000 : 100;
+    mShootTimer->start(shootinterval);
 
 }
 

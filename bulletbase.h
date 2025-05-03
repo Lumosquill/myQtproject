@@ -1,6 +1,8 @@
 #ifndef BULLETBASE_H
 #define BULLETBASE_H
 #include "gameobject.h"
+
+
 class Bulletbase: public Gameobject
 {
     //Q_OBJECT
@@ -22,14 +24,15 @@ public:
         DirE,
         MouseDir,
         PlayerDir};
-
+    qreal mSpeed;//子弹发射速度
 protected:
     Gameobject* mOwner;
-    qreal mSpeed;//子弹发射速度
+
     int mAttackPoint;
     QPointF mPos;//子弹的初始位置
     BulletDir mDir;//子弹的位移方向
     QPointF moveDir = QPointF(1,0);//方向向量，默认向右
+
 };
 
 #endif // BULLETBASE_H

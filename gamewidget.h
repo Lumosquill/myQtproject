@@ -33,9 +33,10 @@
 #include<QMessageBox>
 #include<QPropertyAnimation>
 #include <QGraphicsDropShadowEffect>
-
-//#include<QMediaPlayer>
-//#include<QAudioOutput>
+#include<QVBoxLayout>
+#include <QScrollBar>
+#include<QMediaPlayer>
+#include<QAudioOutput>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -117,6 +118,7 @@ public:
     int mAttainedFelixNum;
     void onFelixBtnClicked();
     void useFelixFelicis();
+    bool mIsFelixActive = false;
 private:
     Ui::Gamewidget *ui;
 
@@ -136,7 +138,6 @@ private:
     QLabel*sentence1label;
     QLabel*victorylabel;
     QLabel*sentence2label;
-    QLabel*sentence3label;
     QLabel*hplabel;
     QLabel*manalabel;
     QLabel*felixLabel;
@@ -155,7 +156,28 @@ private:
     QTimer* playerShootTimer;
     QTimer* bulletMoveTimer;
     QTimer* countdownTimer;//倒计时
+    QTimer* BGMTimer;
     int countdowntime;
+
+    //菜单音乐
+    QMediaPlayer *MenuBGMplayer = nullptr;
+    QAudioOutput *MenuBGMOutput = nullptr;
+
+    //背景音乐
+    QMediaPlayer *BGMplayer = nullptr;
+    QAudioOutput *BGMOutput = nullptr;
+
+    //胜利音乐
+    QMediaPlayer *WinBGMplayer = nullptr;
+    QAudioOutput *WinBGMOutput = nullptr;
+
+    //失败音乐
+    QMediaPlayer *LoseBGMplayer = nullptr;
+    QAudioOutput *LoseBGMOutput = nullptr;
+
+    //按钮音效
+    QMediaPlayer *ButtonAudioplayer = nullptr;
+    QAudioOutput *ButtonAudioOutput = nullptr;
 
 
 };

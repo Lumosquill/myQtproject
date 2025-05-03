@@ -12,7 +12,7 @@ void Gameprogress::EnemyAppearProgress(int _time)
     {
         //enemySummon(int _HP, int _Attack, qreal _Speed, int _No)
         for(int i=0;i<QRandomGenerator::global()->bounded(1,3);i++)
-            Gamewidget::widget->enemySummon(150,0.1,0.3,1);
+            Gamewidget::widget->enemySummon(800,0.1,0.3,1);
     }
     else if(GameTime >20)//蜘蛛出场
     {
@@ -21,7 +21,7 @@ void Gameprogress::EnemyAppearProgress(int _time)
     }
     else if(GameTime >0)//大摄魂怪出场
     {
-        Gamewidget::widget->enemySummon(150,0.1,0.3,3);
+        Gamewidget::widget->enemySummon(2000,0.5,0.3,3);
     }
 
 }
