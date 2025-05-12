@@ -6,14 +6,13 @@ playerbullet::playerbullet(Player *_player, QPointF _dir,int _Attack, qreal _spe
 {
     m_player = _player;
     mAttackPoint = _Attack;
-    //qDebug()<<mAttackPoint;
     mSpeed = _speed;
 
     this->setPixmap(QPixmap(":/1/player bullet.png"));
     this->setScale(0.01);
     if (m_player->isFacingRight()) {
         mPos = m_player->getCenterPos()+QPointF(m_player->pixmap().width()*scale(),m_player->pixmap().height()*scale()/2.5);
-    } else { // 面朝左
+    } else {
         mPos = m_player->getCenterPos()+QPointF(m_player->pixmap().width()*scale()*(-1.5),m_player->pixmap().height()*scale()/2.5);
     }
     this->setPos(mPos);
@@ -24,15 +23,13 @@ playerbullet::playerbullet(Player *_player, QPointF _dir,int _Attack, qreal _spe
 {
     m_player = _player;
     mAttackPoint = _Attack;
-    qDebug()<<mAttackPoint;
     mSpeed = _speed;
-    //mSpeed = 3;
 
     this->setPixmap(QPixmap(":/1/player bullet.png"));
     this->setScale(0.01);
     if (m_player->isFacingRight()) {
         mPos = m_player->getCenterPos()+QPointF(m_player->pixmap().width()*scale(),m_player->pixmap().height()*scale()/2.5);
-    } else { // 面朝左
+    } else {
         mPos = m_player->getCenterPos()+QPointF(m_player->pixmap().width()*scale()*(-1.5),m_player->pixmap().height()*scale()/2.5);
     }
     this->setPos(mPos);

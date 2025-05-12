@@ -48,7 +48,6 @@ void Enemybase::enemyMove(bool dir)
 
     if (dir) this->moveBy(vx, vy);//向右移动
     else this->moveBy(-vx, -vy);
-
 }
 void Enemybase::setMirrorPixmap(QString name)
 {
@@ -62,16 +61,14 @@ void Enemybase::setMirrorPixmap(QString name)
     else mFaceDir = 0; //否则，保持面朝方向为左
     address += ".png";
     this->setPixmap(QPixmap(address));
-
 }
-void Enemybase::startSkill()
-{
-    // 默认啥都不做，由子类重写
-}
-
 void Enemybase::getHurt(int _attack)
 {
     mHP -= _attack;
+}
+void Enemybase::startSkill()
+{
+    //默认啥都不做，由子类重写
 }
 void Enemybase::startConfusedVisualEffect()
 {

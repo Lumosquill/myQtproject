@@ -11,6 +11,7 @@ thoughtbubble::thoughtbubble(const QString& imagePath, EffectType type): effect(
     //初始化漂浮方向（小范围随机）
     dx = QRandomGenerator::global()->generateDouble() * 1.0 - 0.5;
     dy = QRandomGenerator::global()->generateDouble() * 1.0 - 0.5;
+
     //定时器控制“自由漂浮”
     floatTimer = new QTimer(this);
     connect(floatTimer, &QTimer::timeout, this, &thoughtbubble::floatAround);
@@ -24,11 +25,11 @@ thoughtbubble::thoughtbubble(const QString& imagePath, EffectType type): effect(
 void thoughtbubble::floatAround()
 {
 
-    // 漂一点点，并且让方向轻微波动
+    //漂一点点，并且让方向轻微波动
     dx += QRandomGenerator::global()->generateDouble() * 0.2 - 0.1;
     dy += QRandomGenerator::global()->generateDouble() * 0.2 - 0.1;
 
-    // 限制最大移动速度
+    //限制最大移动速度
     dx = qBound(-1.0, dx, 1.0);
     dy = qBound(-1.0, dy, 1.0);
     setPos(x() + dx, y() + dy);

@@ -44,9 +44,9 @@
         <file>gameover.mp3</file>
         <file>Hedwig's Theme.ogg</file>
         <file>button.mp3</file>
-        <file>victory.png</file>
         <file>triumph_sentence.png</file>
         <file>info_page.jpg</file>
         <file>info_page.png</file>
+        <file>victory.png</file>
     </qresource>
 </RCC>

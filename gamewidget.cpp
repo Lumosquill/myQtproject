@@ -12,7 +12,7 @@ Gamewidget::Gamewidget(QWidget *parent)
     ui->setupUi(this);
     widget =this;//初始化静态指针
     setWindowTitle("Expecto Patronum");
-    setWindowIcon(QIcon(":/1/felix felicis.jpg"));
+    setWindowIcon(QIcon(":/1/felix felicis.png"));
     this->move(350,100);
     setFixedSize(850,629);
 
@@ -95,6 +95,7 @@ void Gamewidget::initstart()
 
         QDialog* dialog = new QDialog(this);
         dialog->setWindowTitle("Info");
+        dialog->setWindowIcon(QIcon(":/1/harry.png"));
         dialog->resize(430, 400);
         dialog->setStyleSheet("QDialog { background-color: white; border-radius: 12px; }");
         QScrollArea* scrollArea = new QScrollArea(dialog);
@@ -188,213 +189,6 @@ void Gamewidget::initgame()
         //QMetaObject::invokeMethod(this, "GameOver", Qt::QueuedConnection);
         //QMetaObject::invokeMethod(HPBar, "hide", Qt::QueuedConnection);
     });
-
-
-
-}
-void Gamewidget::restartgame()
-{
-    LoseBGMplayer->pause();
-    BGMplayer->play();
-    mGameView.setScene(&mGameScene);
-    sentence1label->hide();
-    GAMEOVERlabel->hide();
-    //清除怪物与子弹
-    int enemyNum = mEnemyList.size();
-    for(int i = enemyNum-1; i >= 0; i--)
-    {
-        mGameScene.removeItem(mEnemyList[i]);
-        if(mEnemyList[i] != nullptr) mEnemyList[i]->deleteLater();
-        mEnemyList.removeOne(mEnemyList[i]);
-    }
-    int enemyBulletNum = mEnemyBulletList.size();
-    for(int i = enemyBulletNum-1; i >= 0; i--)
-    {
-        mGameScene.removeItem(mEnemyBulletList[i]);
-        if(mEnemyBulletList[i] != nullptr) mEnemyBulletList[i]->deleteLater();
-        mEnemyBulletList.removeOne(mEnemyBulletList[i]);
-    }
-    int playerBulletNum = mMyBulletList.size();
-    for(int i = playerBulletNum-1; i >= 0; i--)
-    {
-        mGameScene.removeItem(mMyBulletList[i]);
-        if(mMyBulletList[i] != nullptr) mMyBulletList[i]->deleteLater();
-        mMyBulletList.removeOne(mMyBulletList[i]);
-    }
-    int chocolatefrogNum=mFrogList.size();
-    for(int i=chocolatefrogNum-1;i>=0;i--)
-    {
-        mGameScene.removeItem(mFrogList[i]);
-        if(mFrogList[i] != nullptr) mFrogList[i]->deleteLater();
-        mFrogList.removeOne(mFrogList[i]);
-    }
-    int thoughtbubbleNum=mThoughtBubbleList.size();
-    for(int i=thoughtbubbleNum-1;i>=0;i--)
-    {
-        mGameScene.removeItem(mThoughtBubbleList[i]);
-        if(mThoughtBubbleList[i] != nullptr) mThoughtBubbleList[i]->deleteLater();
-        mThoughtBubbleList.removeOne(mThoughtBubbleList[i]);
-    }
-    int timeturnerNum=mTimeturnerList.size();
-    for(int i=timeturnerNum-1;i>=0;i--)
-    {
-        mGameScene.removeItem(mTimeturnerList[i]);
-        if(mTimeturnerList[i] != nullptr) mTimeturnerList[i]->deleteLater();
-        mTimeturnerList.removeOne(mTimeturnerList[i]);
-    }
-    int ffNum=mFelixfelicisList.size();
-    for(int i=ffNum-1;i>=0;i--)
-    {
-        mGameScene.removeItem(mFelixfelicisList[i]);
-        if(mFelixfelicisList[i] != nullptr) mFelixfelicisList[i]->deleteLater();
-        mFelixfelicisList.removeOne(mFelixfelicisList[i]);
-    }
-    //重置角色
-    m_player.resetplayer();
-    m_player.setPos(200,200);
-    resetproperties();
-    startTimer();
-
-
-
-}
-void Gamewidget::playermove()
-{
-    qreal speedX = m_player.getSpeed()*(1+m_player.getSpeedRatio()*2);
-    if(mKeyList.size() > 1) speedX /= sqrt(2);//斜着走时控制速度
-    for(int keyCode : mKeyList)
-    {
-        switch(keyCode)
-        {
-        case Qt::Key_W: m_player.moveBy(0,-speedX);break;
-        case Qt::Key_S: m_player.moveBy(0,speedX);break;
-        case Qt::Key_A:
-        {   m_player.moveBy(-speedX,0);
-            //m_player.setFaceDir('l');
-            break;
-        }
-        case Qt::Key_D:
-        {m_player.moveBy(speedX,0);
-            //m_player.setFaceDir('r');
-            break;
-        }
-        }
-    }
-    if(m_player.pos().x()<0)
-        m_player.setX(0);
-    if(m_player.pos().y()<100)
-        m_player.setY(100);
-    if(m_player.pos().x()>850-m_player.scale()*m_player.pixmap().width())
-        m_player.setX(850-m_player.scale()*m_player.pixmap().width());
-    if(m_player.pos().y()>629-m_player.scale()*m_player.pixmap().height())
-        m_player.setY(629-m_player.scale()*m_player.pixmap().height());
-}
-void Gamewidget::keyPressEvent(QKeyEvent *event)
-{
-    // if(event->key() == Qt::Key_Escape)
-    // {
-    //     isStopped = !isStopped;
-    //     if(isStopped) stopTimer();
-    //     else startTimer();
-    //     pauseBTN->click();
-    // }
-
-    if (!isRunning) return;
-    int key = event->key();
-    if ((key == Qt::Key_W || key == Qt::Key_A || key == Qt::Key_S || key == Qt::Key_D)
-        && !mKeyList.contains(key)) {
-        mKeyList.append(key);
-
-        if (key == Qt::Key_A) m_player.setFaceDir('l');
-        if (key == Qt::Key_D) m_player.setFaceDir('r');
-    }
-    QWidget::keyPressEvent(event);
-    playermove();
-}
-void Gamewidget::GameOver()
-{
-    stopTimer();
-    BGMplayer->pause();
-    QTimer::singleShot(1000, this, [=]() {
-        LoseBGMplayer = new QMediaPlayer(this);
-        LoseBGMOutput = new QAudioOutput(this);
-        LoseBGMplayer->setAudioOutput(BGMOutput);
-        LoseBGMplayer->setSource(QUrl("qrc:/1/gameover.mp3"));
-        LoseBGMplayer->play();
-        LoseBGMOutput->setVolume(0.5);
-        mOverScene.setSceneRect(QRect(0,0,850,629));
-        mOverScene.addPixmap(QPixmap(":/1/gameoverscene.jpg"));
-        mGameView.setScene(&mOverScene);
-        HPBar->hide();
-        ManaBar->hide();
-        hplabel->hide();
-        manalabel->hide();
-        felixLabel->hide();
-        felixBtn->hide();
-        GAMEOVERlabel = new QLabel(this);
-        GAMEOVERlabel->setPixmap(QPixmap(":/1/GAME-OVER.png"));
-        GAMEOVERlabel->setGeometry(175, 30, 500, 200);
-        GAMEOVERlabel->show();
-        sentence1label = new QLabel(this);
-        sentence1label->setPixmap(QPixmap(":/1/sentence1.png"));
-        sentence1label->setGeometry(100, 220, 686, 33);
-        sentence1label->show();
-
-        restartbtn = new QToolButton(this);
-        restartbtn->setAutoRaise(true);
-        restartbtn->setIcon(QIcon(":/1/Try-Again.png"));
-        restartbtn->setIconSize(QSize(190,41));
-        restartbtn->move(325,350);
-        restartbtn->show();
-        connect(restartbtn,&QToolButton::clicked,[this](){
-            ButtonAudioplayer->play();
-            restartgame();
-            restartbtn->hide();
-        });
-     });
-}
-void Gamewidget::GameWin()
-{
-    stopTimer();
-
-    BGMplayer->pause();
-    WinBGMplayer = new QMediaPlayer(this);
-    WinBGMOutput = new QAudioOutput(this);
-    WinBGMplayer->setAudioOutput(WinBGMOutput);
-    WinBGMplayer->setSource(QUrl("qrc:/1/gamewin.mp3"));
-    QTimer::singleShot(500, this, [this]() {
-        WinBGMplayer->play(); //延迟0.5秒播放音乐
-        WinBGMOutput->setVolume(0.5);
-        HPBar->hide();
-        ManaBar->hide();
-        hplabel->hide();
-        manalabel->hide();
-        felixLabel->hide();
-        felixBtn->hide();
-        mWinScene.setSceneRect(QRect(0,0,850,629));
-        mWinScene.addPixmap(QPixmap(":/1/gamewinscene.jpg"));
-        mGameView.setScene(&mWinScene);
-        victorylabel = new QLabel(this);
-        victorylabel->setPixmap(QPixmap(":/1/victory.png"));
-        victorylabel->setGeometry(225, 50, 400, 107);
-        victorylabel->show();
-        sentence2label = new QLabel(this);
-        sentence2label->setPixmap(QPixmap(":/1/triumph_sentence.png"));
-        sentence2label->setGeometry(100, 200, 686, 32);
-        sentence2label->show();
-
-    });
-
-}
-void Gamewidget::resetproperties()
-{
-    HPBar->setValue(m_player.getHP());
-    HPBar->show();
-    ManaBar->show();
-    hplabel->show();
-    manalabel->show();
-    felixLabel->show();
-    felixBtn->show();
 }
 void Gamewidget::visualize()
 {
@@ -464,39 +258,196 @@ void Gamewidget::visualize()
     felixLabel->show();
     connect(felixBtn, &QPushButton::clicked, this, &Gamewidget::onFelixBtnClicked);
 }
-void Gamewidget::onFelixBtnClicked()
+void Gamewidget::GameOver()
 {
-    QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "使用福灵剂", "是否使用福灵剂？",
-                                  QMessageBox::Yes | QMessageBox::No);
+    stopTimer();
+    BGMplayer->pause();
+    QTimer::singleShot(1000, this, [=]() {
+        LoseBGMplayer = new QMediaPlayer(this);
+        LoseBGMOutput = new QAudioOutput(this);
+        LoseBGMplayer->setAudioOutput(BGMOutput);
+        LoseBGMplayer->setSource(QUrl("qrc:/1/gameover.mp3"));
+        LoseBGMplayer->play();
+        LoseBGMOutput->setVolume(0.5);
+        mOverScene.setSceneRect(QRect(0,0,850,629));
+        mOverScene.addPixmap(QPixmap(":/1/gameoverscene.jpg"));
+        mGameView.setScene(&mOverScene);
+        HPBar->hide();
+        ManaBar->hide();
+        hplabel->hide();
+        manalabel->hide();
+        felixLabel->hide();
+        felixBtn->hide();
+        GAMEOVERlabel = new QLabel(this);
+        GAMEOVERlabel->setPixmap(QPixmap(":/1/GAME-OVER.png"));
+        GAMEOVERlabel->setGeometry(175, 30, 500, 200);
+        GAMEOVERlabel->show();
+        sentence1label = new QLabel(this);
+        sentence1label->setPixmap(QPixmap(":/1/sentence1.png"));
+        sentence1label->setGeometry(100, 220, 686, 33);
+        sentence1label->show();
 
-    if (reply == QMessageBox::Yes) {
-        useFelixFelicis();
-    }
-}
-void Gamewidget::useFelixFelicis()
-{
-    if (mAttainedFelixNum > 0) {
-
-        mAttainedFelixNum--;
-        felixLabel->setText("x" + QString::number(mAttainedFelixNum));
-        mIsFelixActive = true;
-        QGraphicsDropShadowEffect* glow = new QGraphicsDropShadowEffect;
-        glow->setBlurRadius(20);
-        glow->setColor(QColor(255, 223, 0));
-        glow->setOffset(0, 0);
-        m_player.setGraphicsEffect(glow);
-
-        QTimer::singleShot(6000, [&]() {
-            m_player.setGraphicsEffect(nullptr);//移除光晕
-            mIsFelixActive = false;
+        restartbtn = new QToolButton(this);
+        restartbtn->setAutoRaise(true);
+        restartbtn->setIcon(QIcon(":/1/Try-Again.png"));
+        restartbtn->setIconSize(QSize(190,41));
+        restartbtn->move(325,350);
+        restartbtn->show();
+        connect(restartbtn,&QToolButton::clicked,[this](){
+            ButtonAudioplayer->play();
+            restartgame();
+            restartbtn->hide();
         });
-        m_player.restoreMana(20);
-        m_player.restoreHP(30);
-    } else {
-        // 如果没有福灵剂，弹出提示
-        QMessageBox::information(this, "没有福灵剂", "你没有足够的福灵剂！");
+    });
+}
+void Gamewidget::restartgame()
+{
+    LoseBGMplayer->pause();
+    BGMplayer->play();
+    mGameView.setScene(&mGameScene);
+    sentence1label->hide();
+    GAMEOVERlabel->hide();
+    //清除怪物与子弹
+    int enemyNum = mEnemyList.size();
+    for(int i = enemyNum-1; i >= 0; i--)
+    {
+        mGameScene.removeItem(mEnemyList[i]);
+        if(mEnemyList[i] != nullptr) mEnemyList[i]->deleteLater();
+        mEnemyList.removeOne(mEnemyList[i]);
     }
+    int enemyBulletNum = mEnemyBulletList.size();
+    for(int i = enemyBulletNum-1; i >= 0; i--)
+    {
+        mGameScene.removeItem(mEnemyBulletList[i]);
+        if(mEnemyBulletList[i] != nullptr) mEnemyBulletList[i]->deleteLater();
+        mEnemyBulletList.removeOne(mEnemyBulletList[i]);
+    }
+    int playerBulletNum = mMyBulletList.size();
+    for(int i = playerBulletNum-1; i >= 0; i--)
+    {
+        mGameScene.removeItem(mMyBulletList[i]);
+        if(mMyBulletList[i] != nullptr) mMyBulletList[i]->deleteLater();
+        mMyBulletList.removeOne(mMyBulletList[i]);
+    }
+    int chocolatefrogNum=mFrogList.size();
+    for(int i=chocolatefrogNum-1;i>=0;i--)
+    {
+        mGameScene.removeItem(mFrogList[i]);
+        if(mFrogList[i] != nullptr) mFrogList[i]->deleteLater();
+        mFrogList.removeOne(mFrogList[i]);
+    }
+    int thoughtbubbleNum=mThoughtBubbleList.size();
+    for(int i=thoughtbubbleNum-1;i>=0;i--)
+    {
+        mGameScene.removeItem(mThoughtBubbleList[i]);
+        if(mThoughtBubbleList[i] != nullptr) mThoughtBubbleList[i]->deleteLater();
+        mThoughtBubbleList.removeOne(mThoughtBubbleList[i]);
+    }
+    int timeturnerNum=mTimeturnerList.size();
+    for(int i=timeturnerNum-1;i>=0;i--)
+    {
+        mGameScene.removeItem(mTimeturnerList[i]);
+        if(mTimeturnerList[i] != nullptr) mTimeturnerList[i]->deleteLater();
+        mTimeturnerList.removeOne(mTimeturnerList[i]);
+    }
+    int ffNum=mFelixfelicisList.size();
+    for(int i=ffNum-1;i>=0;i--)
+    {
+        mGameScene.removeItem(mFelixfelicisList[i]);
+        if(mFelixfelicisList[i] != nullptr) mFelixfelicisList[i]->deleteLater();
+        mFelixfelicisList.removeOne(mFelixfelicisList[i]);
+    }
+    //重置角色
+    m_player.resetplayer();
+    m_player.setPos(200,200);
+    resetproperties();
+    startTimer();
+}
+void Gamewidget::resetproperties()
+{
+    HPBar->setValue(m_player.getHP());
+    HPBar->show();
+    ManaBar->show();
+    hplabel->show();
+    manalabel->show();
+    felixLabel->show();
+    felixBtn->show();
+}
+void Gamewidget::GameWin()
+{
+    stopTimer();
+
+    BGMplayer->pause();
+    WinBGMplayer = new QMediaPlayer(this);
+    WinBGMOutput = new QAudioOutput(this);
+    WinBGMplayer->setAudioOutput(WinBGMOutput);
+    WinBGMplayer->setSource(QUrl("qrc:/1/gamewin.mp3"));
+    QTimer::singleShot(500, this, [this]() {
+        WinBGMplayer->play(); //延迟0.5秒播放音乐
+        WinBGMOutput->setVolume(0.5);
+        HPBar->hide();
+        ManaBar->hide();
+        hplabel->hide();
+        manalabel->hide();
+        felixLabel->hide();
+        felixBtn->hide();
+        mWinScene.setSceneRect(QRect(0,0,850,629));
+        mWinScene.addPixmap(QPixmap(":/1/gamewinscene.jpg"));
+        mGameView.setScene(&mWinScene);
+        victorylabel = new QLabel(this);
+        victorylabel->setPixmap(QPixmap(":/1/victory.png"));
+        victorylabel->setGeometry(225, 50, 400, 107);
+        victorylabel->show();
+        sentence2label = new QLabel(this);
+        sentence2label->setPixmap(QPixmap(":/1/triumph_sentence.png"));
+        sentence2label->setGeometry(100, 200, 686, 32);
+        sentence2label->show();
+
+    });
+
+}
+void Gamewidget::playermove()
+{
+    qreal speedX = m_player.getSpeed()*(1+m_player.getSpeedRatio()*2);
+    if(mKeyList.size() > 1) speedX /= sqrt(2);
+    for(int keyCode : mKeyList)
+    {
+        switch(keyCode)
+        {
+        case Qt::Key_W: m_player.moveBy(0,-speedX);break;
+        case Qt::Key_S: m_player.moveBy(0,speedX);break;
+        case Qt::Key_A:
+        {   m_player.moveBy(-speedX,0);
+            break;
+        }
+        case Qt::Key_D:
+        {m_player.moveBy(speedX,0);
+            break;
+        }
+        }
+    }
+    if(m_player.pos().x()<0)
+        m_player.setX(0);
+    if(m_player.pos().y()<100)
+        m_player.setY(100);
+    if(m_player.pos().x()>850-m_player.scale()*m_player.pixmap().width())
+        m_player.setX(850-m_player.scale()*m_player.pixmap().width());
+    if(m_player.pos().y()>629-m_player.scale()*m_player.pixmap().height())
+        m_player.setY(629-m_player.scale()*m_player.pixmap().height());
+}
+void Gamewidget::keyPressEvent(QKeyEvent *event)
+{
+    if (!isRunning) return;
+    int key = event->key();
+    if ((key == Qt::Key_W || key == Qt::Key_A || key == Qt::Key_S || key == Qt::Key_D)
+        && !mKeyList.contains(key)) {
+        mKeyList.append(key);
+
+        if (key == Qt::Key_A) m_player.setFaceDir('l');
+        if (key == Qt::Key_D) m_player.setFaceDir('r');
+    }
+    QWidget::keyPressEvent(event);
+    playermove();
 }
 void Gamewidget::keyReleaseEvent(QKeyEvent *event)
 {
@@ -510,6 +461,7 @@ void Gamewidget::keyReleaseEvent(QKeyEvent *event)
     // QWidget::keyReleaseEvent(event);
     // playermove();
 }
+
 void Gamewidget::mousePressEvent(QMouseEvent *event)
 {
 
@@ -573,19 +525,17 @@ void Gamewidget::enemySummon(int _HP, int _Attack, qreal _Speed, int _No)
         break;
     }
     }
-
     // 生成随机位置
     QPointF tpos(0,0);
     do {
         QPointF _pos(QRandomGenerator::global()->bounded(0,750), QRandomGenerator::global()->bounded(100,400));
         tpos = _pos + QPointF(Enemy->pixmap().width()*Enemy->scale()/2, Enemy->pixmap().height()*Enemy->scale()/2);
     } while(abs((tpos - m_player.getCenterPos()).x()) < 250 && abs((tpos - m_player.getCenterPos()).y()) < 250);
-    //如果 x 方向 和 y 方向 的距离都小于 200，则重新生成 tpos，确保敌人不会太接近玩家
+    //如果 x 方向 和 y 方向 的距离都小于 250，则重新生成 tpos，确保敌人不会太接近玩家
     Enemy->setPos(tpos);
     getGameScene().addItem(Enemy);
     mEnemyList.append(Enemy);
     Enemy->setZValue(2);
-
     Enemy->startSkill();
 }
 void Gamewidget::bubbleSummon(QString path,thoughtbubble::EffectType type)
@@ -658,7 +608,7 @@ void Gamewidget::setTimer()
     enemyMoveTimer = new QTimer(this);
 
     connect(playerMoveTimer,&QTimer::timeout,[this](){
-        playermove();//玩家移动
+        playermove();
         player_enemyCollision();
         player_chocolatefrogCollision();
     });
@@ -692,13 +642,11 @@ void Gamewidget::setTimer()
 
         }
     });
-
-
     // 设置倒计时
     countdownTimer = new QTimer(this);
     connect( countdownTimer, &QTimer::timeout, this, &Gamewidget::onTimeout);
 
-    countdownTimer->start(1000);  // 每秒调用一次
+    countdownTimer->start(1000);  //每秒调用一次
 }
 int gameTime = 50;
 void Gamewidget::onTimeout()
@@ -735,15 +683,12 @@ void Gamewidget::startTimer()
 void Gamewidget::stopTimer()
 {
     isRunning = 0;
-    //暂停定时器
+
     playerMoveTimer->stop();
     bulletMoveTimer->stop();
     enemyMoveTimer->stop();
     playerShootTimer->stop();
     countdownTimer->stop();
-
-    //暂停音乐
-    //BGMplayer->pause();
 }
 void Gamewidget::player_enemyCollision()
 {
@@ -780,14 +725,13 @@ void Gamewidget::bullet_enemyCollision()
                 if(mEnemyList[j]->getHP() <= 0 )
                 {
                     emit mEnemyList[j]->isDead();//发出怪物死亡信号
-
                     //生成巧克力蛙
                     Chocolatefrog* frog = new Chocolatefrog();
                     frog->setPos(mEnemyList[j]->getCenterPos()); //设置为敌人中心位置
                     mGameScene.addItem(frog);
                     mFrogList.append(frog);
 
-                    mGameScene.removeItem(mEnemyList[j]);//从 QList 中移除这个指针（不删除对象）
+                    mGameScene.removeItem(mEnemyList[j]);//从QList中移除这个指针（不删除对象）
                     if (mEnemyList[j] != nullptr) mEnemyList[j]->deleteLater();
                     mEnemyList.removeOne(mEnemyList[j]);//deleteLater()：延迟删除对象本身（事件循环后自动 delete）
 
@@ -854,6 +798,98 @@ void Gamewidget::player_timeturnerCollision()
         }
     }
 }
+void Gamewidget::bullet_thoughtbubbleCollision()
+{
+    int bulletNum = mMyBulletList.size();
+    int bubbleNum = mThoughtBubbleList.size();
+    for(int i=0;i<bulletNum;i++)
+    {
+        for(int j=0;j<bubbleNum;j++)
+            if(mMyBulletList[i]->collidesWithItem(mThoughtBubbleList[j]))//碰撞检测
+            {
+                if (mThoughtBubbleList[j]->effect == thoughtbubble::LoseMana)//负面泡泡
+                {
+                    m_player.m_mana -= 10;
+                    QTimer* shakeTimer = new QTimer;
+                    int shakeCount = 0;
+                    int maxShake = 10; //总共抖动次数（偶数为一个周期）
+                    qreal originalX = m_player.x();
+
+                    connect(shakeTimer, &QTimer::timeout, [=]() mutable {
+                        if (shakeCount >= maxShake) {
+                            m_player.setX(originalX); //恢复原位
+                            shakeTimer->stop();
+                            shakeTimer->deleteLater();
+                            return;
+                        }
+                        //左右切换偏移量
+                        qreal offset = (shakeCount % 2 == 0) ? -2.5 : 2.5;
+                        m_player.setX(originalX + offset);
+                        shakeCount++;
+                    });
+                    shakeTimer->start(30); //每30ms抖一次
+                }
+                else//正面泡泡
+                {
+                    QTimer* jumpTimer = new QTimer;
+                    int jumpCount = 0;
+                    int maxJump = 4; //总共跳跃次数（偶数为一个周期）
+                    qreal originalY = m_player.y(); //获取原始位置
+
+                    //创建闪烁效果定时器
+                    QTimer* blinkTimer = new QTimer;
+                    int blinkCount = 0;
+                    bool isBright = false;
+
+                    //创建荧光效果
+                    QGraphicsDropShadowEffect* glowEffect = new QGraphicsDropShadowEffect;
+                    glowEffect->setBlurRadius(20);
+                    glowEffect->setOffset(0, 0);
+                    //glowEffect->setColor(QColor(150, 180, 250));
+                    //glowEffect->setColor(QColor(150, 210, 255));
+                    glowEffect->setColor(QColor(180, 230, 255));
+                    //glowEffect->setColor(QColor(160, 200, 255));
+                    m_player.setGraphicsEffect(glowEffect); // 加上光环
+
+                    connect(jumpTimer, &QTimer::timeout, [=]() mutable {
+                        if (jumpCount >= maxJump) {
+                            m_player.setY(originalY); //恢复原位
+                            jumpTimer->stop();
+                            jumpTimer->deleteLater();
+                            blinkTimer->stop();
+                            blinkTimer->deleteLater();
+                            m_player.setOpacity(1); //恢复不透明
+                            m_player.setGraphicsEffect(nullptr);
+                            return;
+                        }
+                        qreal offset = (jumpCount % 2 == 0) ? -5 : 5;
+                        m_player.setY(originalY + offset);
+                        jumpCount++;
+                    });
+                    jumpTimer->start(100);
+
+                    connect(blinkTimer, &QTimer::timeout, [=]() mutable {
+                        if (blinkCount >= 8) {
+                            blinkTimer->stop();
+                            blinkTimer->deleteLater();
+                            m_player.setOpacity(1);
+                            return;
+                        }
+
+                        m_player.setOpacity(isBright ? 0.8 : 1);
+                        isBright = !isBright;
+                        blinkCount++;
+                    });
+                    blinkTimer->start(100);
+                }
+
+                ManaBar->setValue(m_player.getMana());
+                mThoughtBubbleList[j]->destroySelf();
+                return;
+
+            }
+    }
+}
 void Gamewidget::player_felixfelicisCollision()
 {
     int ffNum=mFelixfelicisList.size();
@@ -870,98 +906,42 @@ void Gamewidget::player_felixfelicisCollision()
         }
     }
 }
-void Gamewidget::bullet_thoughtbubbleCollision()
+void Gamewidget::onFelixBtnClicked()
 {
-    int bulletNum = mMyBulletList.size();
-    int bubbleNum = mThoughtBubbleList.size();
-    for(int i=0;i<bulletNum;i++)
-    {
-        for(int j=0;j<bubbleNum;j++)
-        if(mMyBulletList[i]->collidesWithItem(mThoughtBubbleList[j]))
-        {
-            if (mThoughtBubbleList[j]->effect == thoughtbubble::LoseMana)
-            {
-                m_player.m_mana -= 10;
-                QTimer* shakeTimer = new QTimer;
-                int shakeCount = 0;
-                int maxShake = 10; // 总共抖动次数（偶数为一个周期）
-                qreal originalX = m_player.x();
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, "使用福灵剂", "是否使用福灵剂？",
+                                  QMessageBox::Yes | QMessageBox::No);
 
-                connect(shakeTimer, &QTimer::timeout, [=]() mutable {
-                    if (shakeCount >= maxShake) {
-                        m_player.setX(originalX); //恢复原位
-                        shakeTimer->stop();
-                        shakeTimer->deleteLater();
-                        return;
-                    }
-                    // 左右切换偏移量
-                    qreal offset = (shakeCount % 2 == 0) ? -2.5 : 2.5;
-                    m_player.setX(originalX + offset);
-                    shakeCount++;
-                });
-                shakeTimer->start(30); // 每 30ms 抖一次
-            }
-            else
-            {
-                QTimer* jumpTimer = new QTimer;
-                int jumpCount = 0;
-                int maxJump = 4; //总共跳跃次数（偶数为一个周期）
-                qreal originalY = m_player.y(); //获取原始位置
-
-                // 创建闪烁效果定时器
-                QTimer* blinkTimer = new QTimer;
-                int blinkCount = 0;
-                bool isBright = false;
-
-                // 创建荧光效果
-                QGraphicsDropShadowEffect* glowEffect = new QGraphicsDropShadowEffect;
-                glowEffect->setBlurRadius(20);
-                glowEffect->setOffset(0, 0);
-                //glowEffect->setColor(QColor(150, 180, 250));
-                //glowEffect->setColor(QColor(150, 210, 255));
-                glowEffect->setColor(QColor(180, 230, 255));
-                //glowEffect->setColor(QColor(160, 200, 255));
-                m_player.setGraphicsEffect(glowEffect); // 加上光环
-
-                connect(jumpTimer, &QTimer::timeout, [=]() mutable {
-                    if (jumpCount >= maxJump) {
-                        m_player.setY(originalY); // 恢复原位
-                        jumpTimer->stop();
-                        jumpTimer->deleteLater();
-                        blinkTimer->stop();
-                        blinkTimer->deleteLater();
-                        m_player.setOpacity(1); // 恢复不透明
-                        m_player.setGraphicsEffect(nullptr);
-                        return;
-                    }
-                    qreal offset = (jumpCount % 2 == 0) ? -5 : 5;
-                    m_player.setY(originalY + offset);
-                    jumpCount++;
-                });
-                jumpTimer->start(100);
-
-                connect(blinkTimer, &QTimer::timeout, [=]() mutable {
-                    if (blinkCount >= 8) {
-                        blinkTimer->stop();
-                        blinkTimer->deleteLater();
-                        m_player.setOpacity(1);
-                        return;
-                    }
-
-                    m_player.setOpacity(isBright ? 0.8 : 1);
-                    isBright = !isBright;
-                    blinkCount++;
-                });
-                blinkTimer->start(100);
-            }
-
-            ManaBar->setValue(m_player.getMana());
-            mThoughtBubbleList[j]->destroySelf();
-            return;
-
-        }
+    if (reply == QMessageBox::Yes) {
+        useFelixFelicis();
     }
 }
+void Gamewidget::useFelixFelicis()
+{
+    if (mAttainedFelixNum > 0) {
+
+        mAttainedFelixNum--;
+        felixLabel->setText("x" + QString::number(mAttainedFelixNum));
+        mIsFelixActive = true;
+        QGraphicsDropShadowEffect* glow = new QGraphicsDropShadowEffect;
+        glow->setBlurRadius(20);
+        glow->setColor(QColor(255, 223, 0));
+        glow->setOffset(0, 0);
+        m_player.setGraphicsEffect(glow);
+
+        QTimer::singleShot(6000, [&]() {
+            m_player.setGraphicsEffect(nullptr);//移除光晕
+            mIsFelixActive = false;
+        });
+        m_player.restoreMana(20);
+        m_player.restoreHP(30);
+        m_player.mDefence+=1;
+    } else {
+        // 如果没有福灵剂，弹出提示
+        QMessageBox::information(this, "没有福灵剂", "你没有足够的福灵剂！");
+    }
+}
+
 void Gamewidget::releaseOutPlayerBullet()
 {
     for(int i=0;i<mMyBulletList.size();i++)

@@ -5,9 +5,7 @@ Spider::Spider(Player *_player, int _HP, int _AttackPoint, qreal _Speed)
 {
     this->setPixmap(QPixmap(":/1/spider.png"));
     this->setScale(1);
-    //qDebug() << "Spider created ";
     setTransformOriginPoint(boundingRect().center());
-
     mNo = 2;
 }
 Spider::~Spider() {
@@ -24,9 +22,10 @@ void Spider::setMirrorPixmap(QString name)
 
 void Spider::spidershoot()
 {
-    if (hasShot) return;  // 避免重复射击
+    if (hasShot) return;
     hasShot = true;
     qDebug() << "spider at" << this->pos();
+
     QTimer* shootTimer = new QTimer(this);
     int* count = new int(0); // 用指针包住，因为 lambda 捕获变量是值
 
@@ -62,8 +61,8 @@ void Spider::startConfusedVisualEffect()
 
         //原地小幅抖动（漂浮）
         mSpeed=0;
-        qreal dx = 2 * sin(spinFrame * 0.3);  // 左右
-        qreal dy = 2 * cos(spinFrame * 0.3);  // 上下
+        qreal dx = 2 * sin(spinFrame * 0.3);  //左右
+        qreal dy = 2 * cos(spinFrame * 0.3);  //上下
         moveBy(dx, dy);
 
         spinFrame++;

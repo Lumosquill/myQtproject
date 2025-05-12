@@ -6,20 +6,15 @@ Player::Player()
 {
     setPixmap(QPixmap(":/1/harry.png"));
 
-    mExp = 0;
-    mLevel = 1;
-
     mhp = 100;
     m_maxhp=100;
+    mDefence = 0;
 
     m_mana=60;
     m_maxmana=100;
 
     m_myspeed = 2;
     mSpeedRatio = 0;
-
-    mDefence = 0;
-
 
     mBulletNum = 5;//子弹个数
 }
@@ -51,16 +46,14 @@ void Player::getHurt(int _attack)
     qreal defen = mDefence;
     defen /= 8;
     mhp -= (int)(_attack *  pow(0.5,defen))==0 ? 1 : (int)(_attack *  pow(0.5,defen));
-
-
 }
 void Player::playerShoot(QPointF _dir)
 {
     int _attack =  (int)(getMana() * (1+getManaRatio()));//攻击力计算
     if(_attack < 1) _attack = 1;
-    qreal defaultSpeed = 8.0; // 设定默认子弹速度
+    qreal defaultSpeed = 8.0; //设定默认子弹速度
 
-    // 生成主子弹
+    //生成主子弹
     for (int i = 0; i < mBulletNum; i++)
     {
         auto* playerBL = new playerbullet(this, _dir, _attack, defaultSpeed);
@@ -70,7 +63,6 @@ void Player::playerShoot(QPointF _dir)
         for(int j=0;j<5 * i;j++)
         {
             playerBL->BulletMove();
-            //SFXplayer->play();
         }
     }
 }
@@ -83,28 +75,15 @@ int Player::getAttackInterval()
     return (int)deltaT < LimitedAttackInterval ? LimitedAttackInterval : (int)deltaT;
     //攻击速度越高，攻击间隔越短，但有下限，不会无限减少
 }
-void Player::PlayerGetExp(int _val)
-{
-    mExp += (int)(_val * (1+getEXPRatio()));
-}
-
-void Player::getItem(int num)
-{
-
-}
 void Player::resetplayer()
 {
-    //setPixmap(QPixmap(":/roles/img/roles/usagi1.png"));
     m_myspeed = 2;
-    mExp = 0;
     mhp = 100;
     m_maxhp = 100;
     m_mana = 1;
-    mDefence = 0;
     mManaRatio = 0;
     mAttackSpeed = 0;//攻击速度
     mSpeedRatio = 0;//移速加成
-    mEXPratio = 0;//经验倍率
     mBulletNum = 1;//子弹个数
 }
 void Player::restoreHP(int num)
